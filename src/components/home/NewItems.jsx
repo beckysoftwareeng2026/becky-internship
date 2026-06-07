@@ -7,7 +7,9 @@ const NewItems = () => {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const [sliderRef] = useKeenSlider({
+  const [loaded, setLoaded] = useState(false);
+
+  const [sliderRef, instanceRef] = useKeenSlider({
     loop: true,
     slides: {
       perView: 4,
@@ -25,13 +27,14 @@ const NewItems = () => {
       },
     },
   });
-
   useEffect(() => {
     fetch("https://us-central1-nft-cloud-functions.cloudfunctions.net/newItems")
       .then((res) => res.json())
       .then((data) => {
         setItems(data);
         setLoading(false);
+
+        setTimeout(() => setLoaded(true), 50);
       })
       .catch((err) => {
         console.error(err);
@@ -39,59 +42,42 @@ const NewItems = () => {
       });
   }, []);
 
-  if (loading) return <div>Loading new items...</div>;
+  if (loading) return <div>Loading...</div>;
 
   return (
     <section id="section-items" className="no-bottom">
       <div className="container">
-        {/* Title */}
-        <div className="row">
-          <div className="col-lg-12 text-center">
-            <h2>New Items</h2>
-            <div className="small-border bg-color-2"></div>
-          </div>
+        <div className="text-center">
+          <h2>New Items</h2>
+          <div className="small-border bg-color-2"></div>
         </div>
 
-        {/* Slider */}
-        <div ref={sliderRef} className="keen-slider">
-          {items.map((item, index) => (
-            <div className="keen-slider__slide" key={item.nftId || index}>
-              <div className="nft__item">
-                <div className="author_list_pp">
-                  <Link to="/author">
-                    <img src={item.authorImage} alt={item.title} />
-                    <i className="fa fa-check"></i>
-                  </Link>
-                </div>
+        {loaded && (
+          <div ref={sliderRef} className="keen-slider">
+            {items.map((item, index) => (
+              <div className="keen-slider__slide" key={item.nftId || index}>
+                <div className="nft__item">
+                  <div className="author_list_pp">
+                    <Link to="/author">
+                      <img src={item.authorImage} alt="" />
+                    </Link>
+                  </div>
 
-                <div className="de_countdown">5h 30m 32s</div>
+                  <div className="nft__item_wrap">
+                    <Link to={`/item-details/${item.nftId}`}>
+                      <img src={item.nftImage} alt={item.title} />
+                    </Link>
+                  </div>
 
-                <div className="nft__item_wrap">
-                  <Link to={`/item-details/${item.nftId}`}>
-                    <img
-                      src={item.nftImage}
-                      className="nft__item_preview"
-                      alt={item.title}
-                    />
-                  </Link>
-                </div>
-
-                <div className="nft__item_info">
-                  <Link to={`/item-details/${item.nftId}`}>
+                  <div className="nft__item_info">
                     <h4>{item.title}</h4>
-                  </Link>
-
-                  <div className="nft__item_price">3.08 ETH</div>
-
-                  <div className="nft__item_like">
-                    <i className="fa fa-heart"></i>
-                    <span>69</span>
+                    <div>{item.price || "3.08 ETH"}</div>
                   </div>
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </div>
     </section>
   );
