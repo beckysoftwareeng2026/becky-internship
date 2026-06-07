@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useKeenSlider } from "keen-slider/react";
+import "keen-slider/keen-slider.min.css";
 
 const ExploreItems = () => {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const [sliderRef] = useKeenSlider({
+  const [sliderRef, instanceRef] = useKeenSlider({
     loop: true,
     slides: {
       perView: 4,

@@ -9,7 +9,7 @@ const HotCollections = () => {
 
   const [loaded, setLoaded] = useState(false);
 
-  const [sliderRef] = useKeenSlider({
+  const [sliderRef, instanceRef] = useKeenSlider({
     loop: true,
     slides: {
       perView: 4,
