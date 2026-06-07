@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useKeenSlider } from "keen-slider/react";
-import "keen-slider/keen-slider.min.css";
 
 const ExploreItems = () => {
   const [items, setItems] = useState([]);
@@ -27,7 +26,9 @@ const ExploreItems = () => {
   });
 
   useEffect(() => {
-    fetch("https://us-central1-nft-cloud-functions.cloudfunctions.net/explore")
+    fetch(
+      "https://us-central1-nft-cloud-functions.cloudfunctions.net/explore?filter=likes_high_to_low",
+    )
       .then((res) => res.json())
       .then((data) => {
         setItems(data);
@@ -39,7 +40,9 @@ const ExploreItems = () => {
       });
   }, []);
 
-  if (loading) return <div>Loading explore items...</div>;
+  if (loading) {
+    return <div className="text-center">Loading explore items...</div>;
+  }
 
   return (
     <div ref={sliderRef} className="keen-slider">
