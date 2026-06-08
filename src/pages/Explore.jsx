@@ -1,92 +1,60 @@
-import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import { useKeenSlider } from "keen-slider/react";
-import "keen-slider/keen-slider.min.css";
+import React, { useEffect } from "react";
+import HeaderExplore from "../components/explore/HeaderExplore";
+import ExploreItems from "../components/explore/ExploreItems";
 
-const ExploreItems = () => {
-  const [items, setItems] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  const [sliderRef, instanceRef] = useKeenSlider({
-    loop: true,
-    slides: {
-      perView: 4,
-      spacing: 20,
-    },
-    breakpoints: {
-      "(max-width: 1200px)": {
-        slides: { perView: 3, spacing: 15 },
-      },
-      "(max-width: 768px)": {
-        slides: { perView: 2, spacing: 15 },
-      },
-      "(max-width: 576px)": {
-        slides: { perView: 1, spacing: 10 },
-      },
-    },
-  });
-
+const Explore = () => {
   useEffect(() => {
-    fetch(
-      "https://us-central1-nft-cloud-functions.cloudfunctions.net/explore?filter=likes_high_to_low",
-    )
-      .then((res) => res.json())
-      .then((data) => {
-        setItems(data);
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error("Error loading explore items:", err);
-        setLoading(false);
-      });
+    window.scrollTo(0, 0);
   }, []);
 
-  if (loading) {
-    return <div className="text-center">Loading explore items...</div>;
-  }
-
   return (
-    <div ref={sliderRef} className="keen-slider">
-      {items.map((item, index) => (
-        <div className="keen-slider__slide" key={item.nftId || index}>
-          <div className="nft__item">
-            {/* Author */}
-            <div className="author_list_pp">
-              <Link to="/author">
-                <img src={item.authorImage} alt={item.title} />
-                <i className="fa fa-check"></i>
-              </Link>
-            </div>
-
-            {/* Image */}
-            <div className="nft__item_wrap">
-              <Link to={`/item-details/${item.nftId}`}>
-                <img
-                  src={item.nftImage}
-                  className="nft__item_preview"
-                  alt={item.title}
-                />
-              </Link>
-            </div>
-
-            {/* Info */}
-            <div className="nft__item_info">
-              <Link to={`/item-details/${item.nftId}`}>
-                <h4>{item.title}</h4>
-              </Link>
-
-              <div className="nft__item_price">{item.price || "3.08 ETH"}</div>
-
-              <div className="nft__item_like">
-                <i className="fa fa-heart"></i>
-                <span>{item.likes || 0}</span>
+    <div id="wrapper">
+      <div className="no-bottom no-top" id="content">
+        {/* Hero Banner */}
+        <section
+          id="subheader"
+          className="text-light"
+          style={{
+            background: "url('/img/background/subheader.jpg') center center",
+            backgroundSize: "cover",
+            padding: "120px 0",
+          }}
+        >
+          <div className="center-y text-center">
+            <div className="container">
+              <div className="row">
+                <div className="col-md-12">
+                  <h1>Explore</h1>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      ))}
+        </section>
+
+        {/* Filter Section */}
+        <section aria-label="section">
+          <div className="container">
+            <div className="row">
+              <div className="col-md-12">
+                <HeaderExplore />
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* NFT Grid */}
+        <section aria-label="section">
+          <div className="container">
+            <div className="row">
+              <div className="col-md-12">
+                <ExploreItems />
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
     </div>
   );
 };
 
-export default ExploreItems;
+export default Explore;

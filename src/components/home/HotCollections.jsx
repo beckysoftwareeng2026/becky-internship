@@ -1,32 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { useKeenSlider } from "keen-slider/react";
-import "keen-slider/keen-slider.min.css";
+import OwlCarousel from "react-owl-carousel";
+
+import "owl.carousel/dist/assets/owl.carousel.css";
+import "owl.carousel/dist/assets/owl.theme.default.css";
 
 const HotCollections = () => {
   const [collections, setCollections] = useState([]);
   const [loading, setLoading] = useState(true);
-
-  const [loaded, setLoaded] = useState(false);
-
-  const [sliderRef, instanceRef] = useKeenSlider({
-    loop: true,
-    slides: {
-      perView: 4,
-      spacing: 20,
-    },
-    breakpoints: {
-      "(max-width: 1200px)": {
-        slides: { perView: 3, spacing: 15 },
-      },
-      "(max-width: 768px)": {
-        slides: { perView: 2, spacing: 15 },
-      },
-      "(max-width: 576px)": {
-        slides: { perView: 1, spacing: 10 },
-      },
-    },
-  });
 
   useEffect(() => {
     fetch(
@@ -36,8 +17,6 @@ const HotCollections = () => {
       .then((data) => {
         setCollections(data);
         setLoading(false);
-
-        setTimeout(() => setLoaded(true), 50);
       })
       .catch((err) => {
         console.error(err);
@@ -48,17 +27,29 @@ const HotCollections = () => {
   if (loading) return <div>Loading...</div>;
 
   return (
-    <section id="section-collections" className="no-bottom">
-      <div className="container">
-        <div className="text-center">
-          <h2>Hot Collections</h2>
-          <div className="small-border bg-color-2"></div>
-        </div>
+    <section className="container">
+      <div className="row">
+        <div className="col-lg-12">
+          <div className="text-center">
+            <h2>Hot Collections</h2>
+            <div className="small-border bg-color-2"></div>
+          </div>
 
-        {loaded && (
-          <div ref={sliderRef} className="keen-slider">
+          <OwlCarousel
+            className="owl-theme"
+            loop
+            margin={20}
+            nav
+            dots={false}
+            responsive={{
+              0: { items: 1 },
+              576: { items: 2 },
+              768: { items: 3 },
+              1200: { items: 4 },
+            }}
+          >
             {collections.map((item, index) => (
-              <div className="keen-slider__slide" key={item.nftId || index}>
+              <div className="item" key={item.nftId || index}>
                 <div className="nft_coll">
                   <div className="nft_wrap">
                     <Link to={`/item-details/${item.nftId}`}>
@@ -79,8 +70,8 @@ const HotCollections = () => {
                 </div>
               </div>
             ))}
-          </div>
-        )}
+          </OwlCarousel>
+        </div>
       </div>
     </section>
   );

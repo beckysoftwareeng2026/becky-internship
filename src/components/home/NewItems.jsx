@@ -1,83 +1,96 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { useKeenSlider } from "keen-slider/react";
-import "keen-slider/keen-slider.min.css";
+import OwlCarousel from "react-owl-carousel";
+
+import "owl.carousel/dist/assets/owl.carousel.css";
+import "owl.carousel/dist/assets/owl.theme.default.css";
 
 const NewItems = () => {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const [loaded, setLoaded] = useState(false);
-
-  const [sliderRef, instanceRef] = useKeenSlider({
-    loop: true,
-    slides: {
-      perView: 4,
-      spacing: 20,
-    },
-    breakpoints: {
-      "(max-width: 1200px)": {
-        slides: { perView: 3, spacing: 15 },
-      },
-      "(max-width: 768px)": {
-        slides: { perView: 2, spacing: 15 },
-      },
-      "(max-width: 576px)": {
-        slides: { perView: 1, spacing: 10 },
-      },
-    },
-  });
   useEffect(() => {
     fetch("https://us-central1-nft-cloud-functions.cloudfunctions.net/newItems")
       .then((res) => res.json())
       .then((data) => {
         setItems(data);
         setLoading(false);
-
-        setTimeout(() => setLoaded(true), 50);
       })
       .catch((err) => {
-        console.error(err);
+        console.error("Error loading new items:", err);
         setLoading(false);
       });
   }, []);
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
   return (
-    <section id="section-items" className="no-bottom">
-      <div className="container">
-        <div className="text-center">
-          <h2>New Items</h2>
-          <div className="small-border bg-color-2"></div>
-        </div>
+    <section className="container no-top">
+      <div className="row">
+        <div className="col-lg-12">
+          <div className="text-center">
+            <h2>New Items</h2>
+            <div className="small-border bg-color-2"></div>
+          </div>
 
-        {loaded && (
-          <div ref={sliderRef} className="keen-slider">
+          <OwlCarousel
+            className="owl-theme"
+            loop
+            margin={20}
+            nav
+            dots={false}
+            responsive={{
+              0: {
+                items: 1,
+              },
+              576: {
+                items: 2,
+              },
+              768: {
+                items: 3,
+              },
+              1200: {
+                items: 4,
+              },
+            }}
+          >
             {items.map((item, index) => (
-              <div className="keen-slider__slide" key={item.nftId || index}>
+              <div className="item" key={item.nftId || index}>
                 <div className="nft__item">
                   <div className="author_list_pp">
                     <Link to="/author">
-                      <img src={item.authorImage} alt="" />
+                      <img
+                        src={item.authorImage}
+                        alt="Author"
+                        className="lazy"
+                      />
                     </Link>
                   </div>
 
                   <div className="nft__item_wrap">
                     <Link to={`/item-details/${item.nftId}`}>
-                      <img src={item.nftImage} alt={item.title} />
+                      <img
+                        src={item.nftImage}
+                        alt={item.title}
+                        className="lazy nft__item_preview"
+                      />
                     </Link>
                   </div>
 
                   <div className="nft__item_info">
                     <h4>{item.title}</h4>
-                    <div>{item.price || "3.08 ETH"}</div>
+
+                    <div className="nft__item_price">
+                      {item.price || "3.08 ETH"}
+                    </div>
                   </div>
                 </div>
               </div>
             ))}
-          </div>
-        )}
+          </OwlCarousel>
+        </div>
       </div>
     </section>
   );
