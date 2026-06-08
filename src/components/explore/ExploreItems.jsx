@@ -5,28 +5,37 @@ const ExploreItems = () => {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    fetch(
-      "https://us-central1-nft-cloud-functions.cloudfunctions.net/explore?filter=likes_high_to_low",
-    )
-      .then((res) => res.json())
-      .then((data) => {
-        setItems(data);
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error("API Error:", err);
-        setLoading(false);
-      });
-  }, []);
+  const ExploreItems = () => {
+    const [items, setItems] = useState([]);
 
-  if (loading) {
+    async function getItems() {
+      const response = await fetch(
+        "https://us-central1-nft-cloud-functions.cloudfunctions.net/explore",
+      );
+      const data = await response.json();
+      setItems(data);
+    }
+
+    useEffect(() => {
+      getItems();
+    }, []);
+
     return (
-      <div className="text-center py-5">
-        <h4>Loading Explore Items...</h4>
-      </div>
+      <>
+        {/* filters here */}
+
+        {items.map((item) => (
+          <div
+            key={item.id}
+            className="d-item col-lg-3 col-md-6 col-sm-6 col-xs-12"
+            style={{ display: "block", backgroundSize: "cover" }}
+          >
+            {/* item card here */}
+          </div>
+        ))}
+      </>
     );
-  }
+  };
 
   return (
     <>
