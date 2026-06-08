@@ -46,9 +46,7 @@ const Explore = () => {
         <section aria-label="section">
           <div className="container">
             <div className="row">
-              <div className="col-md-12">
-                <ExploreItems />
-              </div>
+              <ExploreItems />
             </div>
           </div>
         </section>
