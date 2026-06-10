@@ -19,15 +19,26 @@ const HotCollections = () => {
         setLoading(false);
       })
       .catch((err) => {
-        console.error(err);
+        console.error("Hot Collections API Error:", err);
         setLoading(false);
       });
   }, []);
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) {
+    return (
+      <div className="text-center py-5">
+        <h4>Loading Collections...</h4>
+      </div>
+    );
+  }
 
   return (
-    <section className="container">
+    <section
+      className="container"
+      style={{
+        paddingTop: "80px",
+      }}
+    >
       <div className="row">
         <div className="col-lg-12">
           <div className="text-center">
@@ -37,15 +48,14 @@ const HotCollections = () => {
 
           <OwlCarousel
             className="owl-theme"
-            loop
+            loop={true}
             margin={20}
-            nav
+            nav={true}
             dots={false}
             responsive={{
               0: { items: 1 },
-              576: { items: 2 },
-              768: { items: 3 },
-              1200: { items: 4 },
+              600: { items: 2 },
+              1000: { items: 4 },
             }}
           >
             {collections.map((item, index) => (
@@ -53,19 +63,31 @@ const HotCollections = () => {
                 <div className="nft_coll">
                   <div className="nft_wrap">
                     <Link to={`/item-details/${item.nftId}`}>
-                      <img src={item.nftImage} alt={item.title} />
+                      <img
+                        src={item.nftImage}
+                        className="lazy img-fluid"
+                        alt={item.title}
+                      />
                     </Link>
                   </div>
 
                   <div className="nft_coll_pp">
                     <Link to="/author">
-                      <img src={item.authorImage} alt="" />
+                      <img
+                        className="lazy"
+                        src={item.authorImage}
+                        alt={item.title}
+                      />
+                      <i className="fa fa-check"></i>
                     </Link>
                   </div>
 
                   <div className="nft_coll_info">
-                    <h4>{item.title}</h4>
-                    <span>{item.nftId}</span>
+                    <Link to={`/item-details/${item.nftId}`}>
+                      <h4>{item.title}</h4>
+                    </Link>
+
+                    <span>ERC-{item.nftId}</span>
                   </div>
                 </div>
               </div>

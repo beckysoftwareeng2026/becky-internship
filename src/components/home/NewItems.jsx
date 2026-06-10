@@ -37,23 +37,15 @@ const NewItems = () => {
 
           <OwlCarousel
             className="owl-theme"
-            loop
+            loop={true}
             margin={20}
-            nav
+            nav={true}
             dots={false}
             responsive={{
-              0: {
-                items: 1,
-              },
-              576: {
-                items: 2,
-              },
-              768: {
-                items: 3,
-              },
-              1200: {
-                items: 4,
-              },
+              0: { items: 1 },
+              576: { items: 2 },
+              768: { items: 3 },
+              1200: { items: 4 },
             }}
           >
             {items.map((item, index) => (
@@ -63,9 +55,10 @@ const NewItems = () => {
                     <Link to="/author">
                       <img
                         src={item.authorImage}
-                        alt="Author"
+                        alt={item.title}
                         className="lazy"
                       />
+                      <i className="fa fa-check"></i>
                     </Link>
                   </div>
 
@@ -80,10 +73,15 @@ const NewItems = () => {
                   </div>
 
                   <div className="nft__item_info">
-                    <h4>{item.title}</h4>
+                    <Link to={`/item-details/${item.nftId}`}>
+                      <h4>{item.title}</h4>
+                    </Link>
 
-                    <div className="nft__item_price">
-                      {item.price || "3.08 ETH"}
+                    <div className="nft__item_price">{item.price} ETH</div>
+
+                    <div className="nft__item_like">
+                      <i className="fa fa-heart"></i>
+                      <span>{item.likes}</span>
                     </div>
                   </div>
                 </div>
